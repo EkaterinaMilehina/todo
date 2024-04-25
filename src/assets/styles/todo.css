@@ -3,6 +3,7 @@
     font-size: 1.6rem;
     margin: 0;
     vertical-align: middle;
+    word-wrap: break-word;
 }
 
 .checkbox {
