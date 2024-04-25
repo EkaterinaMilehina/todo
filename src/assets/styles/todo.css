@@ -1,0 +1,59 @@
+.todo-label {
+    color: #f8f8f2;
+    font-size: 1.6rem;
+    margin: 0;
+    vertical-align: middle;
+}
+
+.checkbox {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 1rem;
+    vertical-align: middle;
+    margin: 1rem;
+}
+
+.todo-btn {
+    background-color: transparent;
+    color: #f8f8f2;
+    border: 2px solid #bd93f9;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    height: 100%;
+    margin: 0.5rem;
+    min-width: 5rem;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.todo-btn:hover {
+    background-color: #bd93f9;
+}
+
+.title-counter {
+  color: #f8f8f2;
+  font-size: 1.5em;
+}
+
+.todo-input {
+    background-color: #f8f8f2;
+    border: 2px solid #bd93f9;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    height: 100%;
+    margin: 0.5rem;
+    flex: 1;
+}
+
+.todo-form {
+    width: 100%;
+    display: flex;
+}
+
+.title {
+    color: #f8f8f2;
+    text-align: center;
+}
+
+.filter-btn:focus {
+    background-color: #bd93f9;
+}
