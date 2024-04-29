@@ -2,38 +2,55 @@ import { FC, useState } from 'react';
 import { ITodo } from '../models/todo.model';
 import '../assets/styles/todo.css';
 import Todo from './Todo';
-import Counter from './Counter';
 import Input from './Input';
 
 const TodoList: React.FC = () => {
     const [task, setTask] = useState<ITodo[]>(JSON.parse(localStorage.getItem('todoList')!) || []);
     const [filter, setFilter] = useState('all');
 
+    const updateLocalStorage = (updatedTaskList: ITodo[]) => {
+        localStorage.setItem('todoList', JSON.stringify(updatedTaskList));
+    };
+
     const handleDelete = (id: string) => {
-        setTask(prevTask => prevTask.filter(item => item.id !== id));
+        setTask(prevTask => {
+            const updatedTaskList = prevTask.filter(item => item.id !== id);
+            updateLocalStorage(updatedTaskList);
+            return updatedTaskList;
+        });
     };
 
     const handleAdd = (item: ITodo) => {
-        setTask(prevTask => [...prevTask, item]);
+        setTask(prevTask => {
+            const updatedTaskList = [...prevTask, item];
+            updateLocalStorage(updatedTaskList);
+            return updatedTaskList;
+        });
     };
 
     const handleCheckboxChange = (id: string) => {
-      setTask((prevTask) => {
-        const updatedTask = prevTask.map((task) => {
-          if (task.id === id) {
-            return { ...task, completed: !task.completed };
-          }
-          return task;
+        setTask(prevTask => {
+            const updatedTaskList = prevTask.map(task => {
+                if (task.id === id) {
+                    return { ...task, completed: !task.completed };
+                }
+                return task;
+            });
+            updateLocalStorage(updatedTaskList);
+            return updatedTaskList;
         });
-        return updatedTask;
-      });
     };
 
     const handleSaveTodo = () => {
-        localStorage.setItem('todoList', JSON.stringify(task));
-      }; 
+        updateLocalStorage(task);
+    };
 
-    localStorage.setItem('todoList', JSON.stringify(task));
+    const filters: Record<string, (task: ITodo) => boolean> = {
+        all: () => true,
+        active: (task: ITodo) => !task.completed,
+        completed: (task: ITodo) => task.completed,
+    };
+    const filteredTasks = task.filter(filters[filter]);
     
     return (
         <div>
@@ -50,24 +67,18 @@ const TodoList: React.FC = () => {
                     Show Completed Tasks
                 </button>
             </div>
-            <Counter task={task} />
-            {task
-                .filter(task => {
-                    if (filter === 'all') {
-                        return true;
-                    }
-                    if (filter === 'active') {
-                        return !task.completed;
-                    }
-                    if (filter === 'completed') {
-                        return task.completed;
-                    }
-                        return false;
-          
-                })
-                .map(item => (
-                    <Todo todo={item} handleDelete={handleDelete} key={item.id} handleCheckboxChange={handleCheckboxChange} handleSaveTodo={handleSaveTodo} />
-                ))}
+            <h2 className='title-counter'>
+                {task.length} {task.length > 1 ? 'tasks' : 'task'} remaining
+            </h2>
+            {filteredTasks.map(item => (
+                <Todo
+                    todo={item}
+                    handleDelete={handleDelete}
+                    key={item.id}
+                    handleCheckboxChange={handleCheckboxChange}
+                    handleSaveTodo={handleSaveTodo}
+                />
+            ))}
         </div>
     );
 };
