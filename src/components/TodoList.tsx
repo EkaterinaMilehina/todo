@@ -5,7 +5,7 @@ import Todo from './Todo';
 import Input from './Input';
 
 const TodoList: React.FC = () => {
-    const [task, setTask] = useState<ITodo[]>(JSON.parse(localStorage.getItem('todoList')!) || []);
+    const [task, setTask] = useState<ITodo[]>(JSON.parse(localStorage.getItem('todoList') || '[]'));
     const [filter, setFilter] = useState('all');
 
     const updateLocalStorage = (updatedTaskList: ITodo[]) => {
