@@ -7,7 +7,7 @@ interface IInputProps {
 }
 
 const Input: React.FC<IInputProps> = (props: IInputProps) => {
-    const handleAdd = props.handleAdd;
+    const {handleAdd} = props;
     const [valueInput, setValueInput] = useState('');
 
     const handleClickAdd = () => {

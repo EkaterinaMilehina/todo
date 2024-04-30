@@ -6,27 +6,20 @@ interface ITodoProps {
     todo: ITodo;
     handleDelete: (id: string) => void;
     handleCheckboxChange: (id: string) => void;
-    handleSaveTodo: () => void;
+    handleSaveTodo: (input: string, id: string) => void;
 }
 
 const Todo: React.FC<ITodoProps> = (props: ITodoProps) => {
-    const todo = props.todo;
+    const {todo, handleDelete, handleCheckboxChange, handleSaveTodo} = props;
 
-    const [completed, setCompleted] = useState(todo.completed);
     const [input, setInput] = useState(todo.title);
     const [isEditing, setIsEditing] = useState(false);
 
-    const handleCheckboxChange = () => {
-        setCompleted(!completed);
-        props.handleCheckboxChange(todo.id);
-    };
-
-    const handleSaveTodo = () => {
+    const handleSave = () => {
         if (input) {
-            todo.title = input;
             setIsEditing(prev => !prev);
+            handleSaveTodo(input, todo.id);
         }
-        props.handleSaveTodo();
     };
 
     const handleCancelTodo = () => {
@@ -42,9 +35,9 @@ const Todo: React.FC<ITodoProps> = (props: ITodoProps) => {
                         <input
                             type='checkbox'
                             id={todo.id}
-                            checked={completed}
+                            checked={todo.completed}
                             className='checkbox'
-                            onChange={handleCheckboxChange}
+                            onChange={() => handleCheckboxChange(todo.id)}
                         />
                         <label htmlFor={todo.id} className='todo-label'>
                             {todo.title}
@@ -55,7 +48,7 @@ const Todo: React.FC<ITodoProps> = (props: ITodoProps) => {
                         <button className='todo-btn' onClick={() => setIsEditing(prev => !prev)}>
                             Edit
                         </button>
-                        <button className='todo-btn' onClick={() => props.handleDelete(todo.id)}>
+                        <button className='todo-btn' onClick={() => handleDelete(todo.id)}>
                             Delete
                         </button>
                     </div>
@@ -73,7 +66,7 @@ const Todo: React.FC<ITodoProps> = (props: ITodoProps) => {
                         <button className='todo-btn' onClick={handleCancelTodo}>
                             Cancel
                         </button>
-                        <button className='todo-btn' onClick={handleSaveTodo}>
+                        <button className='todo-btn' onClick={handleSave}>
                             Save
                         </button>
                     </div>

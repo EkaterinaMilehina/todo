@@ -4,16 +4,22 @@ import '../assets/styles/todo.css';
 import Todo from './Todo';
 import Input from './Input';
 
+enum Filter {
+    All = 'all',
+    Active = 'active',
+    Completed = 'completed'
+}
+
 const TodoList: React.FC = () => {
-    const [task, setTask] = useState<ITodo[]>(JSON.parse(localStorage.getItem('todoList') || '[]'));
-    const [filter, setFilter] = useState('all');
+    const [tasks, setTasks] = useState<ITodo[]>(JSON.parse(localStorage.getItem('todoList') || '[]'));
+    const [filter, setFilter] = useState(Filter.All);
 
     const updateLocalStorage = (updatedTaskList: ITodo[]) => {
         localStorage.setItem('todoList', JSON.stringify(updatedTaskList));
     };
 
     const handleDelete = (id: string) => {
-        setTask(prevTask => {
+        setTasks(prevTask => {
             const updatedTaskList = prevTask.filter(item => item.id !== id);
             updateLocalStorage(updatedTaskList);
             return updatedTaskList;
@@ -21,7 +27,7 @@ const TodoList: React.FC = () => {
     };
 
     const handleAdd = (item: ITodo) => {
-        setTask(prevTask => {
+        setTasks(prevTask => {
             const updatedTaskList = [...prevTask, item];
             updateLocalStorage(updatedTaskList);
             return updatedTaskList;
@@ -29,7 +35,7 @@ const TodoList: React.FC = () => {
     };
 
     const handleCheckboxChange = (id: string) => {
-        setTask(prevTask => {
+        setTasks(prevTask => {
             const updatedTaskList = prevTask.map(task => {
                 if (task.id === id) {
                     return { ...task, completed: !task.completed };
@@ -41,34 +47,43 @@ const TodoList: React.FC = () => {
         });
     };
 
-    const handleSaveTodo = () => {
-        updateLocalStorage(task);
+    const handleSaveTodo = (input: string, id: string) => {
+        const updatedTaskList = tasks.map(task => {
+            if (task.id === id) {
+                return { ...task, title: input };
+            }
+            return task;
+        });
+        setTasks(updatedTaskList); 
+        updateLocalStorage(updatedTaskList); 
     };
-
+    
     const filters: Record<string, (task: ITodo) => boolean> = {
         all: () => true,
         active: (task: ITodo) => !task.completed,
         completed: (task: ITodo) => task.completed,
     };
-    const filteredTasks = task.filter(filters[filter]);
+    const filteredTasks = tasks.filter(filters[filter]);
+
+    const todoCounter = `${tasks.length} ${tasks.length > 1 ? 'tasks' : 'task'} remaining`
     
     return (
         <div>
             <h1 className='title'>Todont</h1>
             <Input handleAdd={handleAdd} />
             <div>
-                <button className='todo-btn filter-btn' onClick={() => setFilter('all')}>
+                <button className='todo-btn filter-btn' onClick={() => setFilter(Filter.All)}>
                     Show All Tasks
                 </button>
-                <button className='todo-btn filter-btn' onClick={() => setFilter('active')}>
+                <button className='todo-btn filter-btn' onClick={() => setFilter(Filter.Active)}>
                     Show Active Tasks
                 </button>
-                <button className='todo-btn filter-btn' onClick={() => setFilter('completed')}>
+                <button className='todo-btn filter-btn' onClick={() => setFilter(Filter.Completed)}>
                     Show Completed Tasks
                 </button>
             </div>
             <h2 className='title-counter'>
-                {task.length} {task.length > 1 ? 'tasks' : 'task'} remaining
+                {todoCounter}
             </h2>
             {filteredTasks.map(item => (
                 <Todo
