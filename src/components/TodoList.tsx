@@ -7,7 +7,7 @@ import Input from './Input';
 enum Filter {
     All = 'all',
     Active = 'active',
-    Completed = 'completed'
+    Completed = 'completed',
 }
 
 const TodoList: React.FC = () => {
@@ -19,32 +19,26 @@ const TodoList: React.FC = () => {
     };
 
     const handleDelete = (id: string) => {
-        setTasks(prevTask => {
-            const updatedTaskList = prevTask.filter(item => item.id !== id);
-            updateLocalStorage(updatedTaskList);
-            return updatedTaskList;
-        });
+        const updatedTaskList = tasks.filter(item => item.id !== id);
+        updateLocalStorage(updatedTaskList);
+        setTasks(updatedTaskList);
     };
 
     const handleAdd = (item: ITodo) => {
-        setTasks(prevTask => {
-            const updatedTaskList = [...prevTask, item];
-            updateLocalStorage(updatedTaskList);
-            return updatedTaskList;
-        });
+        const updatedTaskList = [...tasks, item];
+        updateLocalStorage(updatedTaskList);
+        setTasks(updatedTaskList);
     };
 
     const handleCheckboxChange = (id: string) => {
-        setTasks(prevTask => {
-            const updatedTaskList = prevTask.map(task => {
-                if (task.id === id) {
-                    return { ...task, completed: !task.completed };
-                }
-                return task;
-            });
-            updateLocalStorage(updatedTaskList);
-            return updatedTaskList;
+        const updatedTaskList = tasks.map(task => {
+            if (task.id === id) {
+                return { ...task, completed: !task.completed };
+            }
+            return task;
         });
+        updateLocalStorage(updatedTaskList);
+        setTasks(updatedTaskList);
     };
 
     const handleSaveTodo = (input: string, id: string) => {
@@ -54,10 +48,10 @@ const TodoList: React.FC = () => {
             }
             return task;
         });
-        setTasks(updatedTaskList); 
-        updateLocalStorage(updatedTaskList); 
+        updateLocalStorage(updatedTaskList);
+        setTasks(updatedTaskList);
     };
-    
+
     const filters: Record<string, (task: ITodo) => boolean> = {
         all: () => true,
         active: (task: ITodo) => !task.completed,
@@ -65,8 +59,8 @@ const TodoList: React.FC = () => {
     };
     const filteredTasks = tasks.filter(filters[filter]);
 
-    const todoCounter = `${tasks.length} ${tasks.length > 1 ? 'tasks' : 'task'} remaining`
-    
+    const todoCounter = `${tasks.length} ${tasks.length > 1 ? 'tasks' : 'task'} remaining`;
+
     return (
         <div>
             <h1 className='title'>Todont</h1>
@@ -82,9 +76,7 @@ const TodoList: React.FC = () => {
                     Show Completed Tasks
                 </button>
             </div>
-            <h2 className='title-counter'>
-                {todoCounter}
-            </h2>
+            <h2 className='title-counter'>{todoCounter}</h2>
             {filteredTasks.map(item => (
                 <Todo
                     todo={item}
